@@ -1,0 +1,50 @@
+{
+  "port": 8080,
+  "nodeId": "pcdn-1",
+  "region": "us-east-1",
+  "cacheDir": "/app/cache",
+  "maxCacheSize": 1073741824,
+  "ttl": 86400,
+  "compression": true,
+  "http2": false,
+  "apiKey": "change-this-in-production",
+  "watchDirs": ["/app/uploads"],
+  "redis": {
+    "enabled": true,
+    "host": "redis-service",
+    "port": 6379,
+    "password": "",
+    "db": 0,
+    "keyPrefix": "pcdn:",
+    "ttl": 86400
+  },
+  "rateLimit": {
+    "enabled": true,
+    "windowMs": 900000,
+    "maxRequests": 1000
+  },
+  "imageTransform": {
+    "enabled": true,
+    "maxWidth": 4000,
+    "maxHeight": 4000,
+    "quality": 85,
+    "allowedFormats": ["jpeg", "png", "webp", "avif", "gif"],
+    "cacheTransformed": true
+  },
+  "ssl": {
+    "enabled": false
+  },
+  "origin": {
+    "enabled": false
+  },
+  "nodes": [
+    {
+      "id": "pcdn-1",
+      "host": "0.0.0.0",
+      "port": 8080,
+      "region": "us-east-1",
+      "weight": 100,
+      "healthy": true
+    }
+  ]
+}

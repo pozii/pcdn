@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pcdn-config
+  namespace: pcdn
+data:
+  NODE_ENV: "production"
+  PCDN_PORT: "8080"
+  LOG_LEVEL: "info"
+  REDIS_HOST: "redis-service"
+  REDIS_PORT: "6379"
+  CACHE_DIR: "/app/cache"
+  MAX_CACHE_SIZE: "1073741824"
+  TTL: "86400"
+  COMPRESSION: "true"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pcdn-secrets
+  namespace: pcdn
+type: Opaque
+stringData:
+  PCDN_API_KEY: "your-secure-api-key-here"
+  REDIS_PASSWORD: "your-redis-password"

@@ -1,0 +1,116 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pcdn
+  namespace: pcdn
+  labels:
+    app: pcdn
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: pcdn
+  template:
+    metadata:
+      labels:
+        app: pcdn
+    spec:
+      containers:
+        - name: pcdn
+          image: ghcr.io/yourusername/pcdn:latest
+          ports:
+            - containerPort: 8080
+            - containerPort: 8443
+          envFrom:
+            - configMapRef:
+                name: pcdn-config
+            - secretRef:
+                name: pcdn-secrets
+          volumeMounts:
+            - name: cache-volume
+              mountPath: /app/cache
+            - name: uploads-volume
+              mountPath: /app/uploads
+            - name: logs-volume
+              mountPath: /app/logs
+            - name: config-volume
+              mountPath: /app/config/pcdn.json
+              subPath: pcdn.json
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+      volumes:
+        - name: cache-volume
+          persistentVolumeClaim:
+            claimName: pcdn-cache-pvc
+        - name: uploads-volume
+          persistentVolumeClaim:
+            claimName: pcdn-uploads-pvc
+        - name: logs-volume
+          emptyDir: {}
+        - name: config-volume
+          configMap:
+            name: pcdn-config-files
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pcdn-service
+  namespace: pcdn
+spec:
+  selector:
+    app: pcdn
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+    - name: https
+      port: 443
+      targetPort: 8443
+  type: ClusterIP
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: pcdn-hpa
+  namespace: pcdn
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: pcdn
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80

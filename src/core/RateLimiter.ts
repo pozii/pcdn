@@ -58,12 +58,6 @@ export class RateLimiter {
           code: 'RATE_LIMIT_EXCEEDED',
           retryAfter: Math.ceil((this.config.windowMs || 900000) / 1000)
         });
-      },
-      onLimitReached: (req: Request, res: Response, optionsUsed: any) => {
-        this.logger.warn('Rate limit reached for client', {
-          ip: req.ip,
-          path: req.path
-        });
       }
     });
   }

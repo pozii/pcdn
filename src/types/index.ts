@@ -36,6 +36,16 @@ export interface ImageTransformConfig {
   cacheTransformed?: boolean; // Cache transformed images
 }
 
+export interface ProtocolConfig {
+  http2?: boolean;
+  http3?: boolean; // QUIC support
+  webSocket?: boolean;
+  webSocketPath?: string;
+  maxWebSocketConnections?: number;
+  webSocketTimeout?: number;
+  quicPort?: number;
+}
+
 export interface CDNConfig {
   port: number;
   nodeId: string;
@@ -46,13 +56,14 @@ export interface CDNConfig {
   nodes: EdgeNode[];
   ssl?: SSLConfigType;
   compression: boolean;
-  http2: boolean;
+  http2: boolean; // Deprecated: use protocols.http2 instead
   apiKey: string;
   watchDirs?: string[];
   origin?: OriginConfig;
   rateLimit?: RateLimitConfig;
   redis?: RedisConfig;
   imageTransform?: ImageTransformConfig;
+  protocols?: ProtocolConfig;
 }
 
 export interface EdgeNode {

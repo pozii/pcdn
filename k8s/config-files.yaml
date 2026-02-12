@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pcdn-config-files
+  namespace: pcdn
+data:
+  pcdn.json: |
+    {
+      "port": 8080,
+      "nodeId": "pcdn-1",
+      "region": "us-east-1",
+      "cacheDir": "/app/cache",
+      "maxCacheSize": 1073741824,
+      "ttl": 86400,
+      "compression": true,
+      "http2": true,
+      "apiKey": "${PCDN_API_KEY}",
+      "watchDirs": ["/app/uploads"],
+      "redis": {
+        "enabled": true,
+        "host": "redis-service",
+        "port": 6379,
+        "password": "${REDIS_PASSWORD}",
+        "keyPrefix": "pcdn:",
+        "ttl": 86400
+      },
+      "rateLimit": {
+        "enabled": true,
+        "windowMs": 900000,
+        "maxRequests": 1000
+      },
+      "imageTransform": {
+        "enabled": true,
+        "maxWidth": 4000,
+        "maxHeight": 4000,
+        "quality": 85,
+        "allowedFormats": ["jpeg", "png", "webp", "avif", "gif"],
+        "cacheTransformed": true
+      },
+      "ssl": {
+        "enabled": false
+      },
+      "origin": {
+        "enabled": false
+      },
+      "protocols": {
+        "http2": true,
+        "http3": false,
+        "webSocket": true,
+        "webSocketPath": "/ws",
+        "maxWebSocketConnections": 1000
+      },
+      "nodes": [
+        {
+          "id": "pcdn-1",
+          "host": "0.0.0.0",
+          "port": 8080,
+          "region": "us-east-1",
+          "weight": 100,
+          "healthy": true
+        }
+      ]
+    }
