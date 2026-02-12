@@ -1,0 +1,65 @@
+{
+  "port": 8080,
+  "nodeId": "node-1",
+  "region": "local",
+  "cacheDir": "./cache",
+  "maxCacheSize": 1073741824,
+  "ttl": 86400,
+  "compression": true,
+  "http2": true,
+  "apiKey": "your-secure-api-key-here",
+  "watchDirs": ["./uploads", "./assets"],
+  "ssl": {
+    "enabled": false,
+    "auto": true,
+    "email": "admin@yourdomain.com",
+    "domains": ["cdn.yourdomain.com"],
+    "agreeTos": true
+  },
+  "rateLimit": {
+    "enabled": true,
+    "windowMs": 900000,
+    "maxRequests": 1000,
+    "skipSuccessfulRequests": false,
+    "skipFailedRequests": false
+  },
+  "redis": {
+    "enabled": false,
+    "host": "localhost",
+    "port": 6379,
+    "password": null,
+    "db": 0,
+    "keyPrefix": "pcdn:",
+    "ttl": 86400
+  },
+  "imageTransform": {
+    "enabled": true,
+    "maxWidth": 4000,
+    "maxHeight": 4000,
+    "quality": 85,
+    "allowedFormats": ["jpeg", "png", "webp", "avif", "gif"],
+    "defaultFormat": "jpeg",
+    "cacheTransformed": true
+  },
+  "origin": {
+    "enabled": true,
+    "url": "https://example.com",
+    "timeout": 30000,
+    "retryAttempts": 3,
+    "cacheOnPull": true,
+    "followRedirects": true,
+    "maxRedirectDepth": 5,
+    "allowedExtensions": [".jpg", ".png", ".gif", ".css", ".js", ".json"],
+    "deniedExtensions": [".php", ".exe"]
+  },
+  "nodes": [
+    {
+      "id": "node-1",
+      "host": "localhost",
+      "port": 8080,
+      "region": "local",
+      "weight": 100,
+      "healthy": true
+    }
+  ]
+}

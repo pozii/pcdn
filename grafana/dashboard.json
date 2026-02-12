@@ -1,0 +1,170 @@
+{
+  "dashboard": {
+    "title": "PCDN - Professional CDN Dashboard",
+    "tags": ["pcdn", "cdn", "monitoring"],
+    "timezone": "browser",
+    "schemaVersion": 36,
+    "refresh": "5s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "HTTP Requests / Second",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(pcdn_http_requests_total[5m])",
+            "legendFormat": "{{method}} {{status_code}}"
+          }
+        ],
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 }
+      },
+      {
+        "id": 2,
+        "title": "Request Duration (p95)",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(pcdn_http_request_duration_seconds_bucket[5m]))",
+            "legendFormat": "{{route}}"
+          }
+        ],
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 }
+      },
+      {
+        "id": 3,
+        "title": "Cache Hit Rate",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "rate(pcdn_cache_hits_total[5m]) / (rate(pcdn_cache_hits_total[5m]) + rate(pcdn_cache_misses_total[5m]))",
+            "legendFormat": "Hit Rate"
+          }
+        ],
+        "gridPos": { "h": 4, "w": 6, "x": 0, "y": 8 },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percentunit",
+            "min": 0,
+            "max": 1,
+            "thresholds": {
+              "steps": [
+                { "color": "red", "value": 0 },
+                { "color": "yellow", "value": 0.7 },
+                { "color": "green", "value": 0.9 }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "Cache Size",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "pcdn_cache_size_bytes",
+            "legendFormat": "Size"
+          }
+        ],
+        "gridPos": { "h": 4, "w": 6, "x": 6, "y": 8 },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "bytes"
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "Active Connections",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "pcdn_active_connections",
+            "legendFormat": "Connections"
+          }
+        ],
+        "gridPos": { "h": 4, "w": 6, "x": 12, "y": 8 }
+      },
+      {
+        "id": 6,
+        "title": "Bandwidth Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(pcdn_bandwidth_total_bytes[5m])",
+            "legendFormat": "Total"
+          },
+          {
+            "expr": "rate(pcdn_bandwidth_by_content_type_bytes[5m])",
+            "legendFormat": "{{content_type}}"
+          }
+        ],
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "Bps"
+          }
+        }
+      },
+      {
+        "id": 7,
+        "title": "Cache Operations",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(pcdn_cache_hits_total[5m])",
+            "legendFormat": "Hits"
+          },
+          {
+            "expr": "rate(pcdn_cache_misses_total[5m])",
+            "legendFormat": "Misses"
+          },
+          {
+            "expr": "rate(pcdn_cache_evictions_total[5m])",
+            "legendFormat": "Evictions"
+          }
+        ],
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 }
+      },
+      {
+        "id": 8,
+        "title": "Response Size Distribution",
+        "type": "heatmap",
+        "targets": [
+          {
+            "expr": "rate(pcdn_http_response_size_bytes_bucket[5m])",
+            "format": "heatmap"
+          }
+        ],
+        "gridPos": { "h": 8, "w": 24, "x": 0, "y": 20 },
+        "dataFormat": "tsbuckets"
+      },
+      {
+        "id": 9,
+        "title": "Node Health",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "pcdn_node_health",
+            "format": "table",
+            "instant": true
+          }
+        ],
+        "gridPos": { "h": 6, "w": 12, "x": 0, "y": 28 }
+      },
+      {
+        "id": 10,
+        "title": "Cache Entries",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "pcdn_cache_entries_total",
+            "legendFormat": "Entries"
+          }
+        ],
+        "gridPos": { "h": 4, "w": 6, "x": 18, "y": 8 }
+      }
+    ],
+    "time": { "from": "now-1h", "to": "now" }
+  }
+}
